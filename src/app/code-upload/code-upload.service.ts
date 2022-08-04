@@ -1,4 +1,6 @@
 import { Injectable } from "@angular/core";
+import { HttpClient } from '@angular/common/http';
+import { UploadRequestBody, UploadResponse } from "./upload.models"
 
 enum Months {
   "Január",
@@ -19,6 +21,8 @@ enum Months {
 export class CodeUploadService {
 
 
+  constructor(
+    private http: HttpClient) {}
 
   returnHours() {
     const hours: string[] = [];
@@ -61,6 +65,11 @@ export class CodeUploadService {
     const purchaseMinute = minute.length === 1 ? `0${minute}` : minute;
 
     return `2022-${purchaseMonth}-${purchaseDay} ${purchaseHour}:${purchaseMinute}`;
+  }
+
+  uploadCode(requestBody: UploadRequestBody) {
+    return this.http.post<UploadResponse>("https:/ncp-dummy.staging.moonproject.io/api/bene-mark/code/upload", requestBody)
+      
   }
   
 }

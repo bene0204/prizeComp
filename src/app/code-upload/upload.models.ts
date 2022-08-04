@@ -12,3 +12,9 @@ export interface UploadResponse {
     }
   ]
 }
+
+export interface UploadRequestBody {
+  email: string,
+  code: string,
+  purchase_time: string
+}

@@ -1,8 +1,11 @@
-import { HttpClient } from '@angular/common/http';
+
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { openRegistrationDialog } from '../registration/registration.component';
+import { RegistrationService } from '../registration/registration.service';
 import { CodeUploadService } from './code-upload.service';
-import { UploadResponse } from './upload-response';
+import { UploadRequestBody } from './upload.models';
 
 @Component({
   selector: 'app-code-upload',
@@ -16,8 +19,11 @@ export class CodeUploadComponent implements OnInit {
   hours: string[] = [];
   minutes: string[] = [];
 
+  
+
   constructor(private codeUploadService: CodeUploadService,
-    private http: HttpClient) { }
+    private registrationService: RegistrationService,
+    private dialog: MatDialog) { }
 
   ngOnInit(): void {
 
@@ -32,12 +38,20 @@ export class CodeUploadComponent implements OnInit {
     hour: new FormControl(null, [Validators.required]),
     minute: new FormControl(null, [Validators.required])
    })
+
+   this.registrationService.registrationSuccessful.subscribe({
+    next: successful => {
+      if (successful) {
+        this.onSubmit();
+      }
+    }
+   })
   }
 
   onSubmit(){
     console.log(this.codeForm.value)
 
-    const requestBody = {
+    const requestBody: UploadRequestBody = {
       email: this.codeForm.value.email,
       code: this.codeForm.value.code,
       purchase_time: this.codeUploadService
@@ -47,16 +61,19 @@ export class CodeUploadComponent implements OnInit {
           this.codeForm.value.minute)
     }
 
-    console.log(requestBody);
+    this.codeUploadService.uploadCode(requestBody).subscribe({
+      next: response => {
+        console.log(response.data);
+        this.codeForm.reset();
+        this.codeForm.get('day')!.setValue(this.days[0]);
+      },
+      error: error => {
+        openRegistrationDialog(this.dialog, this.codeForm.value.email);
+      }
+    })
 
-    this.http.post<UploadResponse>("https:/ncp-dummy.staging.moonproject.io/api/bene-mark/code/upload", requestBody)
-      .subscribe({
-        next: response => {
-          console.log(response);
-        }
-      })
+    
 
-    // this.codeForm.reset();
-    // this.codeForm.get('day')!.setValue(this.days[0]);
+    
   }
 }
