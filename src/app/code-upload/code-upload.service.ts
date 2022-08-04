@@ -26,14 +26,14 @@ export class CodeUploadService {
 
   returnHours() {
     const hours: string[] = [];
-    for (let i = 1; i<= 23; i++) {
+    for (let i = 0; i<= 23; i++) {
       hours.push(i.toString());
     }
     return hours;
   }
   returnMinutes() {
     const minutes: string[] = []
-    for (let i = 1; i<= 59; i++) {
+    for (let i = 0; i<= 59; i++) {
       minutes.push(i.toString());
     }
     return minutes;

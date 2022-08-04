@@ -7,17 +7,20 @@ import { MatInputModule } from "@angular/material/input";
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatSelectModule} from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog'
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 
 import { AppComponent } from './app.component';
 import { CodeUploadComponent } from './code-upload/code-upload.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegistrationComponent } from './registration/registration.component';
+import { ResultDialogComponent } from './result-dialog/result-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CodeUploadComponent,
-    RegistrationComponent
+    RegistrationComponent,
+    ResultDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -28,7 +31,8 @@ import { RegistrationComponent } from './registration/registration.component';
     MatInputModule,
     MatSelectModule,
     BrowserAnimationsModule,
-    MatDialogModule
+    MatDialogModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
