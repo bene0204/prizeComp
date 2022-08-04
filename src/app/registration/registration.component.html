@@ -1,0 +1,26 @@
+<div class="registration">
+  <h2 mat-dialog-title>Regisztráció</h2>
+
+  <mat-dialog-content [formGroup]="registrationForm" class="registration form">
+    <mat-form-field>
+      <input readonly matInput placeholder="Email" formControlName="email" />
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Név" formControlName="name" />
+    </mat-form-field>
+    <mat-checkbox color="primary" formControlName="acceptTerms">
+      Elfogadom a játékszabályokat
+    </mat-checkbox>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button
+      [disabled]="!registrationForm.valid"
+      mat-raised-button
+      color="primary"
+      (click)="onSubmit()"
+    >
+      Regisztráció
+    </button>
+  </mat-dialog-actions>
+</div>
