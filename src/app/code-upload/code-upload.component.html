@@ -33,8 +33,12 @@
       </mat-select>
     </mat-form-field>
   </div>
+  <div class="spinner-container" *ngIf="loading">
+    <mat-spinner diameter="35"></mat-spinner>
+  </div>
   <button
     type="button"
+    *ngIf="!loading"
     mat-raised-button
     color="primary"
     [disabled]="!codeForm.valid"

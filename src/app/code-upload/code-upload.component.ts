@@ -2,8 +2,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { finalize } from 'rxjs';
 import { openRegistrationDialog } from '../registration/registration.component';
 import { RegistrationService } from '../registration/registration.service';
+import { openResultDialog } from '../result-dialog/result-dialog.component';
 import { CodeUploadService } from './code-upload.service';
 import { UploadRequestBody } from './upload.models';
 
@@ -19,6 +21,7 @@ export class CodeUploadComponent implements OnInit {
   hours: string[] = [];
   minutes: string[] = [];
 
+  loading = false;
   
 
   constructor(private codeUploadService: CodeUploadService,
@@ -33,7 +36,7 @@ export class CodeUploadComponent implements OnInit {
 
    this.codeForm = new FormGroup({
     email: new FormControl(null,[Validators.required, Validators.email]),
-    code: new FormControl(null, [Validators.required, Validators.pattern(/^[A-Za-z0-9]{8,9}$/i)]),
+    code: new FormControl(null, [Validators.required, Validators.pattern(/^[A-Za-z0-9]{8}$/i)]),
     day: new FormControl(this.days[0], [Validators.required]),
     hour: new FormControl(null, [Validators.required]),
     minute: new FormControl(null, [Validators.required])
@@ -49,6 +52,7 @@ export class CodeUploadComponent implements OnInit {
   }
 
   onSubmit(){
+    this.loading = true;
     console.log(this.codeForm.value)
 
     const requestBody: UploadRequestBody = {
@@ -61,13 +65,21 @@ export class CodeUploadComponent implements OnInit {
           this.codeForm.value.minute)
     }
 
-    this.codeUploadService.uploadCode(requestBody).subscribe({
+    this.codeUploadService.uploadCode(requestBody)
+    .pipe(finalize(() => this.loading = false)
+    ).subscribe({
       next: response => {
-        console.log(response.data);
+        let message = "";
+
+        response.data.won ? message = "Gratulálunk, nyertél!" : message = "Sajnos most nem nyertél."
+
+        openResultDialog(this.dialog, message);
+
         this.codeForm.reset();
         this.codeForm.get('day')!.setValue(this.days[0]);
       },
       error: error => {
+        console.log(error)
         openRegistrationDialog(this.dialog, this.codeForm.value.email);
       }
     })

@@ -1,6 +1,7 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { finalize } from 'rxjs';
 
 import { RegistrationRequestBody } from './registration.models';
 import { RegistrationService } from './registration.service';
@@ -13,6 +14,8 @@ import { RegistrationService } from './registration.service';
 export class RegistrationComponent implements OnInit {
 
   registrationForm!: FormGroup;
+
+  loading = false;
 
 
   constructor(@Inject(MAT_DIALOG_DATA) private email: string,
@@ -29,16 +32,20 @@ export class RegistrationComponent implements OnInit {
   }
 
   close() {
+    this.loading = false;
     this.dialogRef.close()
   }
 
   onSubmit() {
+    this.loading = true;
+
     const requestBody: RegistrationRequestBody = {
       email: this.registrationForm.value.email,
       name: this.registrationForm.value.name
     }
 
-    this.registrationService.register(requestBody).subscribe({
+    this.registrationService.register(requestBody)
+    .subscribe({
       next: response => {
         
           this.registrationService.registrationSuccessful.next(response.data.success);
