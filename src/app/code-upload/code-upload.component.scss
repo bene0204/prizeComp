@@ -1,0 +1,32 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  margin: 20px auto;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 2px 2px 8px rgb(0,0,0,0.5);
+  mat-form-field {
+    margin: 0 5px;
+  }
+  h2 {
+    margin: 0 auto;
+  }
+  h4 {
+    margin: 0 auto;
+  }
+  .date-fields{
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 auto;
+
+  }
+
+  button {
+    width: 20%;
+    min-width: fit-content;
+    margin: 10px auto;
+  }
+
+  
+}
