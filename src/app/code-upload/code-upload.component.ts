@@ -79,8 +79,6 @@ export class CodeUploadComponent implements OnInit {
       },
       error: error => {
         
-        console.log(error)
-
         if (error.error.errors.length === 1 && error.error.errors[0].code === "email:not_found") {
 
          return openRegistrationDialog(this.dialog, this.codeForm.value.email);
