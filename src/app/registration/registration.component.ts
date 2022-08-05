@@ -2,6 +2,7 @@ import { Component, Inject, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { finalize } from 'rxjs';
+import { openResultDialog } from '../result-dialog/result-dialog.component';
 
 import { RegistrationRequestBody } from './registration.models';
 import { RegistrationService } from './registration.service';
@@ -20,7 +21,8 @@ export class RegistrationComponent implements OnInit {
 
   constructor(@Inject(MAT_DIALOG_DATA) private email: string,
   private registrationService: RegistrationService,
-  private dialogRef: MatDialogRef<RegistrationComponent>
+  private dialogRef: MatDialogRef<RegistrationComponent>,
+  private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -47,13 +49,17 @@ export class RegistrationComponent implements OnInit {
     this.registrationService.register(requestBody)
     .subscribe({
       next: response => {
-        
-          this.registrationService.registrationSuccessful.next(response.data.success);
-          this.close();
+          if (response.data.success){
+            this.registrationService.registrationSuccessful.next(true);
+            this.close();
+            return;
+          }
+
+          openResultDialog(this.dialog, "Hiba.")
         
       },
       error: error => {
-        console.log(error)
+        openResultDialog(this.dialog, "Hibás név.")
       }
       
     });

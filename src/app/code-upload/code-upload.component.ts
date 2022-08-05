@@ -35,7 +35,7 @@ export class CodeUploadComponent implements OnInit {
     this.minutes = this.codeUploadService.returnMinutes();
 
    this.codeForm = new FormGroup({
-    email: new FormControl(null,[Validators.required, Validators.email]),
+    email: new FormControl(null,[Validators.required,Validators.email]),
     code: new FormControl(null, [Validators.required, Validators.pattern(/^[A-Za-z0-9]{8}$/i)]),
     day: new FormControl(this.days[0], [Validators.required]),
     hour: new FormControl(null, [Validators.required]),
@@ -53,7 +53,6 @@ export class CodeUploadComponent implements OnInit {
 
   onSubmit(){
     this.loading = true;
-    console.log(this.codeForm.value)
 
     const requestBody: UploadRequestBody = {
       email: this.codeForm.value.email,
@@ -79,8 +78,33 @@ export class CodeUploadComponent implements OnInit {
         this.codeForm.get('day')!.setValue(this.days[0]);
       },
       error: error => {
+        
         console.log(error)
-        openRegistrationDialog(this.dialog, this.codeForm.value.email);
+
+        if (error.error.errors.length === 1 && error.error.errors[0].code === "email:not_found") {
+
+         return openRegistrationDialog(this.dialog, this.codeForm.value.email);
+        }
+
+        let errors: string[] = []
+
+        for (let err of error.error.errors) {
+          switch (err.source.parameters[0]){
+              case "email":
+                errors.push("email")
+                break;
+              case "code":
+                errors.push("kód")
+                break;
+              case "purchase_time":
+                errors.push("dátum")
+                break;
+          }
+        }
+
+        const message = "Hibás " + errors.join(", ") + ".";
+
+        return openResultDialog(this.dialog, message)
       }
     })
 
