@@ -43,7 +43,8 @@ export class CodeUploadService {
   returnDays(){
     const days: string[] = []
     const day = new Date (2022,6,1);
-    const endDate = new Date();
+    const endDate = new Date() < new Date(2022,8,31,23,59,59) ?
+     new Date() : new Date(2022,8,31,23,59,59);
 
     while(day < endDate){
       const month = day.getMonth();
@@ -58,6 +59,11 @@ export class CodeUploadService {
   }
 
   returnPurchaseTime(day: string, hour: string, minute: string) {
+
+    if(!day || !hour || !minute){
+      return "";
+    }
+
     const month = Months[day.split(" ")[0] as keyof typeof Months] 
     const purchaseMonth = month < 10 ? `0${month}`: month;
     const purchaseDay = day.split(" ")[1].length === 1 ? `0${day.split(" ")[1]}` : day.split(" ")[1];

@@ -1,16 +1,19 @@
 export interface UploadResponse {
   data?: {
     success: boolean,
-    won: false
-  }
-  errors?: [
-    {
-      code: string,
-      source: {
-        parameters: string[]
+    won: boolean
+  },
+  error?: {
+    errors: [
+      {
+        code: string,
+        source: {
+          parameters : string[]
+        }
       }
-    }
-  ]
+    ]
+  }
+  
 }
 
 export interface UploadRequestBody {
